@@ -1,0 +1,12 @@
+Name: user-api
+Host: 0.0.0.0
+Port: 8888
+Mysql:
+  DataSource: $user:$password@tcp(jdbc:mysql://$host:$port)/$db?charset=utf8mb4&parseTime=true&loc=Asia%2FShanghai
+CacheRedis:
+  - Host: $host
+    Pass: $pass
+    Type: node
+Auth:
+  AccessSecret: "123456789"
+  AccessExpire: 60
