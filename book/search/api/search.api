@@ -1,24 +1,26 @@
 type (
-	SearchReq {
-		// 图书名称
-		Name string `form:"name"`
-	}
+    SearchReq {
+        // 图书名称
+        Name string `form:"name"`
+    }
 
-	SearchReply {
-		Name  string `json:"name"`
-		Count int    `json:"count"`
-	}
+    SearchReply {
+        Name string `json:"name"`
+        Count int `json:"count"`
+    }
 )
 
 @server(
-	jwt: Auth
+    jwt: Auth
+    // 局部路由中间件
+    middleware : Example
 )
 service search-api {
-	@handler search
-	get /search/do (SearchReq) returns (SearchReply)
+    @handler search
+    get /search/do (SearchReq) returns (SearchReply)
 }
 
 service search-api {
-	@handler ping
-	get /search/ping
+    @handler ping
+    get /search/ping
 }
