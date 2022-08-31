@@ -3,6 +3,8 @@ package main
 import (
 	"flag"
 	"fmt"
+	"github.com/zeromicro/go-zero/core/logx"
+	"net/http"
 
 	"go-zero-demo/book/search/api/internal/config"
 	"go-zero-demo/book/search/api/internal/handler"
@@ -22,7 +24,14 @@ func main() {
 
 	server := rest.MustNewServer(c.RestConf)
 	defer server.Stop()
-
+	// 全局路由中间件
+	server.Use(func(next http.HandlerFunc) http.HandlerFunc {
+		logx.Info("global middleware going...")
+		return func(writer http.ResponseWriter, request *http.Request) {
+			logx.Info("global middleware excuted")
+			next(writer, request)
+		}
+	})
 	ctx := svc.NewServiceContext(c)
 	handler.RegisterHandlers(server, ctx)
 
