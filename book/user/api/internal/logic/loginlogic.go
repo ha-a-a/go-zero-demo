@@ -2,9 +2,9 @@ package logic
 
 import (
 	"context"
-	"errors"
 	"fmt"
 	"github.com/golang-jwt/jwt/v4"
+	"go-zero-demo/book/user/api/common/errorx"
 	"go-zero-demo/book/user/model"
 	"strings"
 	"time"
@@ -33,20 +33,20 @@ func (l *LoginLogic) Login(req *types.LoginRequest) (resp *types.LoginResponse, 
 	username := req.Username
 	password := req.Password
 	if len(strings.TrimSpace(username)) == 0 || len(strings.TrimSpace(password)) == 0 {
-		return nil, errors.New("参数异常")
+		return nil, errorx.NewDefaultCodeError("参数异常")
 	}
 
 	bookUser, err := l.svcCtx.UserModel.FindOneByNumber(l.ctx, username)
 	switch err {
 	case nil:
 	case model.ErrNotFound:
-		return nil, errors.New("用户名不存在")
+		return nil, errorx.NewDefaultCodeError("用户名不存在")
 	default:
 		return nil, err
 	}
 
 	if bookUser.Password != password {
-		return nil, errors.New("用户密码不正确")
+		return nil, errorx.NewDefaultCodeError("用户密码不正确")
 	}
 	fmt.Printf("bookUser=%v", bookUser)
 
