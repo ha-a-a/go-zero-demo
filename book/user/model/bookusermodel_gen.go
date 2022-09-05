@@ -93,8 +93,8 @@ func (m *defaultBookUserModel) FindOne(ctx context.Context, id int64) (*BookUser
 }
 func (m *defaultBookUserModel) FindAllByName(ctx context.Context, name string) ([]*BookUser, error) {
 	resp := make([]*BookUser, 0)
-	query := fmt.Sprintf("select %s from %s where `name` = ? ", bookUserRows, m.table)
-	if err := m.CachedConn.QueryRowsNoCache(&resp, query, name); err != nil {
+	query := fmt.Sprintf("select %s from %s where `name` like ? ", bookUserRows, m.table)
+	if err := m.CachedConn.QueryRowsNoCache(&resp, query, "%"+name+"%"); err != nil {
 		return nil, err
 	}
 	return resp, nil
@@ -124,8 +124,8 @@ func (m *defaultBookUserModel) Insert(ctx context.Context, data *BookUser) (sql.
 	bookUserIdKey := fmt.Sprintf("%s%v", cacheBookUserIdPrefix, data.Id)
 	bookUserNumberKey := fmt.Sprintf("%s%v", cacheBookUserNumberPrefix, data.Number)
 	ret, err := m.ExecCtx(ctx, func(ctx context.Context, conn sqlx.SqlConn) (result sql.Result, err error) {
-		query := fmt.Sprintf("insert into %s (%s) values (?, ?, ?)", m.table, bookUserRowsExpectAutoSet)
-		return conn.ExecCtx(ctx, query, data.Number, data.Name, data.Gender)
+		query := fmt.Sprintf("insert into %s (%s) values (?, ?,?, ?)", m.table, bookUserRowsExpectAutoSet)
+		return conn.ExecCtx(ctx, query, data.Number, data.Name, data.Password, data.Gender)
 	}, bookUserIdKey, bookUserNumberKey)
 	return ret, err
 }

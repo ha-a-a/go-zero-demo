@@ -3,7 +3,6 @@ package logic
 import (
 	"context"
 	"fmt"
-	"github.com/golang-jwt/jwt/v4"
 	"go-zero-demo/book/user/api/common/errorx"
 	"go-zero-demo/book/user/model"
 	"strings"
@@ -52,7 +51,7 @@ func (l *LoginLogic) Login(req *types.LoginRequest) (resp *types.LoginResponse, 
 
 	now := time.Now().Unix()
 	accessExpire := l.svcCtx.Config.Auth.AccessExpire
-	token, err := l.getJwtToken(l.svcCtx.Config.Auth.AccessSecret, now, accessExpire, bookUser.Id)
+	token, err := NewTokenlogic(l.ctx).GetJwtToken(l.svcCtx.Config.Auth.AccessSecret, now, accessExpire, bookUser.Id)
 	if err != nil {
 		return nil, err
 	}
@@ -64,15 +63,4 @@ func (l *LoginLogic) Login(req *types.LoginRequest) (resp *types.LoginResponse, 
 		AccessExpire: now + accessExpire,
 		RefreshAfter: now + accessExpire/2,
 	}, nil
-}
-
-func (l *LoginLogic) getJwtToken(secretKey string, iat, seconds, userId int64) (string, error) {
-	fmt.Println("getJwtToken")
-	claims := make(jwt.MapClaims)
-	claims["expire"] = iat + seconds
-	claims["iat"] = iat
-	claims["userId"] = userId
-	token := jwt.New(jwt.SigningMethodHS256)
-	token.Claims = claims
-	return token.SignedString([]byte(secretKey))
 }

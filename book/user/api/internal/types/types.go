@@ -7,8 +7,10 @@ type LoginRequest struct {
 }
 
 type AddUserRequest struct {
+	Number   string `json:"number"`
 	Username string `json:"username"`
 	Password string `json:"password"`
+	Gender   string `json:"gender"`
 }
 
 type GetUserByNameRequest struct {
