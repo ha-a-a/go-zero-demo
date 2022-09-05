@@ -2,6 +2,7 @@ package logic
 
 import (
 	"context"
+	"net/http"
 
 	"go-zero-demo/book/search/api/internal/svc"
 	"go-zero-demo/book/search/api/internal/types"
@@ -24,8 +25,8 @@ func NewSearchLogic(ctx context.Context, svcCtx *svc.ServiceContext) *SearchLogi
 }
 
 func (l *SearchLogic) Search(req *types.SearchReq) (resp *types.SearchReply, err error) {
-	// todo: add your logic here and delete this line
-
+	// 调用user查询用户信息
+	http.Get("http://localhost:8888/api/order/get/1")
 	return &types.SearchReply{
 		Name:  req.Name,
 		Count: 0,

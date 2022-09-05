@@ -6,6 +6,15 @@ type LoginRequest struct {
 	Password string `json:"password"`
 }
 
+type AddUserRequest struct {
+	Username string `json:"username"`
+	Password string `json:"password"`
+}
+
+type GetUserByNameRequest struct {
+	Username string `form:"username"`
+}
+
 type LoginResponse struct {
 	Id           int64  `json:"id"`
 	Name         string `json:"name"`
@@ -13,4 +22,12 @@ type LoginResponse struct {
 	AccessToken  string `json:"accessToken"`
 	AccessExpire int64  `json:"accessExpire"`
 	RefreshAfter int64  `json:"refreshAfter"`
+}
+type UserDetailResponse struct {
+	Id     int64  `json:"id"`
+	Name   string `json:"name"`
+	Gender string `json:"gender"`
+}
+type UsersResponse struct {
+	UserList []*UserDetailResponse `json:"userDetailResponse"`
 }

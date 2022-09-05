@@ -24,6 +24,7 @@ var (
 
 	cacheBookUserIdPrefix     = "cache:bookUser:id:"
 	cacheBookUserNumberPrefix = "cache:bookUser:number:"
+	cacheBookUserNamePrefix   = "cache:bookUser:name:"
 )
 
 type (
@@ -31,6 +32,7 @@ type (
 		Insert(ctx context.Context, data *BookUser) (sql.Result, error)
 		FindOne(ctx context.Context, id int64) (*BookUser, error)
 		FindOneByNumber(ctx context.Context, number string) (*BookUser, error)
+		FindAllByName(ctx context.Context, name string) ([]*BookUser, error)
 		Update(ctx context.Context, data *BookUser) error
 		Delete(ctx context.Context, id int64) error
 	}
@@ -88,6 +90,14 @@ func (m *defaultBookUserModel) FindOne(ctx context.Context, id int64) (*BookUser
 	default:
 		return nil, err
 	}
+}
+func (m *defaultBookUserModel) FindAllByName(ctx context.Context, name string) ([]*BookUser, error) {
+	resp := make([]*BookUser, 0)
+	query := fmt.Sprintf("select %s from %s where `name` = ? ", bookUserRows, m.table)
+	if err := m.CachedConn.QueryRowsNoCache(&resp, query, name); err != nil {
+		return nil, err
+	}
+	return resp, nil
 }
 
 func (m *defaultBookUserModel) FindOneByNumber(ctx context.Context, number string) (*BookUser, error) {
